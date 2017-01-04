@@ -1,0 +1,25 @@
+{
+  "name": "sprtec-editor-2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "jquery": "^3.1.1",
+    "vue": "^2.1.8"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dominikfiala/sprtec-editor-2.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dominikfiala/sprtec-editor-2/issues"
+  },
+  "homepage": "https://github.com/dominikfiala/sprtec-editor-2#readme"
+}
