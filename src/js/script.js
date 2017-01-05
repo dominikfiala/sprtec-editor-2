@@ -219,7 +219,7 @@ var appData = {
   groups: []
 }
 
-var savedDataIndexes = ['settings', 'teams']
+var savedDataIndexes = ['settings', 'groups']
 
 if (window.localStorage) {
   var store = window.localStorage
@@ -232,7 +232,7 @@ if (window.localStorage) {
   })
 }
 
-Vue.component('controls-add-group', {
+Vue.component('controls-group-add', {
   props: {
     options: Array,
     selected: {
@@ -242,20 +242,26 @@ Vue.component('controls-add-group', {
   },
   methods: {
     addGroup: function() {
-      console.log(this.selected)
+      var parentEl = $(this.$refs['option-select']).parent()
+      if (this.selected) {
+        app.$emit('groupAdded', this.selected)
+        parentEl.removeClass('has-error')
+      }
+      else {
+        parentEl.addClass('has-error')
+      }
     }
   },
   template: `
     <div :id="$options.name">
-      <div class="row">
-        <div class="col-xs-10">
-          <select v-model="selected" class="form-control">
+      <div class="row form-group">
+        <div class="col-xs-9">
+          <select v-model="selected" ref="option-select" class="form-control">
             <option value="">Zvolte tým</option>
             <option v-for="option in options" :value="option.value">{{option.text}}</option>
           </select>
-          {{selected}}
         </div>
-        <div class="col-xs-2">
+        <div class="col-xs-3">
           <button @click="addGroup" type="button" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span></button>
         </div>
       </div>
@@ -263,11 +269,63 @@ Vue.component('controls-add-group', {
   `
 })
 
+Vue.component('controls-group', {
+  props: {
+    template: Object,
+    items: Array
+  },
+  template: `
+    <div class="row form-group">
+      <div class="col-xs-9">
+        <h5><strong class="form-control-static">{{template.title}}</strong></h5>
+      </div>
+      <div class="col-xs-3">
+        <div class="btn-group">
+          <button type="button" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span></button>
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="caret"></span>
+            <span class="sr-only">Toggle Dropdown</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-right">
+            <li><a href="#">Action</a></li>
+            <li><a href="#">Another action</a></li>
+            <li><a href="#">Something else here</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#">Separated link</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  `
+})
+
 Vue.component('controls', {
-  props: ['availableGroups'],
+  props: {
+    templates: Object,
+    groups: Array
+  },
+  data: function() {
+    var availableGroups = [];
+    for (group in this.templates) {
+      availableGroups.push({
+        value: group,
+        text: this.templates[group].title
+      })
+    }
+    // sort by title
+    availableGroups.sort((a, b) => {
+      if (a.text === b.text) { return 0; }
+      else { return (a.text < b.text) ? -1 : 1; }
+    });
+
+    return {
+      availableGroups: availableGroups
+    };
+  },
   template: `
     <div :id="$options.name">
-      <controls-add-group :options="availableGroups"></controls-add-group>
+      <controls-group-add :options="availableGroups"></controls-group-add>
+      <controls-group v-for="group in groups" :template="templates[group.template]" :items="group.items"></controls-group-add>
     </div>
   `
 })
@@ -284,35 +342,37 @@ var app = new Vue({
   template: `
     <div id="app">
       <div id="wrap">
-        <controls :availableGroups="availableGroups"></controls>
+        <controls :templates="templates" :groups="groups"></controls>
         <preview></preview>
       </div>
     </div>
   `,
-  computed: {
-    availableGroups: function() {
-      var out = [];
-      for (group in this.templates) {
-        out.push({
-          value: group,
-          text: this.templates[group].title
-        })
-      }
-      // sort by title
-      out.sort((a, b) => {
-        if (a.text === b.text) { return 0; }
-        else { return (a.text < b.text) ? -1 : 1; }
-      });
-      return out;
-    },
-  },
   methods: {
     addGroup: function(groupIndex) {
+      this.groups.unshift({
+        template: groupIndex,
+        items: []
+      })
+
+      this.addItem(groupIndex)
     },
+    addItem: function(groupIndex, item = {}) {
+      this.groups.forEach(function(index) {
+        if (groupIndex === index.template) {
+          index.items.unshift(item)
+        }
+      })
+    }
   },
 
   mounted: function() {
     $('body').addClass('app-loaded')
+  },
+
+  created () {
+    this.$on('groupAdded', function(groupIndex) {
+      this.addGroup(groupIndex)
+    })
   }
 });
 
