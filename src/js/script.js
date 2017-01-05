@@ -3,7 +3,7 @@ var appData = {
     'stl-2015-home': {
       title: 'St. Louis Blues 2015 domácí',
       style: {
-        image: 'src/gfx/stl-2015-home.png'
+        image: 'gfx/stl-2015-home.png'
       },
       text: {
         'surname': {
@@ -45,7 +45,7 @@ var appData = {
     'stl-2015-away': {
       title: 'St. Louis Blues 2015 hosté',
       style: {
-        image: 'src/gfx/stl-2015-away.png'
+        image: 'gfx/stl-2015-away.png'
       },
       text: {
         'surname': {
@@ -87,7 +87,7 @@ var appData = {
     'stl-2013-home': {
       title: 'St. Louis Blues 2013 domácí',
       style: {
-        image: 'src/gfx/stl-2013-home.png'
+        image: 'gfx/stl-2013-home.png'
       },
       text: {
         'name': {
@@ -151,7 +151,7 @@ var appData = {
     'stl-2013-away': {
       title: 'St. Louis Blues 2013 hosté',
       style: {
-        image: 'src/gfx/stl-2013-away.png'
+        image: 'gfx/stl-2013-away.png'
       },
       text: {
         'name': {
