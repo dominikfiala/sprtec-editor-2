@@ -1,5 +1,3 @@
-console.log('Adam je Buh');
-
 var appData = {
   templates: {
     'stl-2015-home': {
